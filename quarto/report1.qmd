@@ -13,8 +13,8 @@ execute:
   warning: false #suppress warnings
   message: false #suppress messages
   output: true #include output of code chunks
-  cache: true
-  freeze: true
+  cache: false
+  freeze: false
   
 format:
   html:
@@ -50,9 +50,9 @@ library(dplyr)
 # load and manipulate data to the provided parameters
 df <- fromJSON(params$df,simplifyDataFrame = TRUE)
 if (params$adm_level %in% unique(df$ADM_LEVEL) & params$year %in% unique(df$YR)){
-  df <- df %>% filter(ADM_LEVEL == params$adm_level & YR == params$year)
+  df <- df %>% filter(ADM_LEVEL == params$adm_level & YR == params$year & SEX != 'B') 
 } else{
-  stop("ERROR: either your adm_level given or your year does not exist LMAO")
+  stop("ERROR: either your adm_level given or your year does not exist")
 }
 ```
 
@@ -60,13 +60,13 @@ if (params$adm_level %in% unique(df$ADM_LEVEL) & params$year %in% unique(df$YR))
 ## Population Pyramid: `r params$year`
 
 ```{r}
-pyr <- plot_pyr(df,"ADM0",params$adm_name)
+pyr <- plot_pyr(df, paste0("ADM",params$adm_level), params$adm_name)
 pyr
 ```
 
 ## Choropleth Map: `r params$adm_name` `r params$year`
 ```{r}
-plot_chlor(tanzania_adm0, df,params$adm_name,params$year,paste0("ADM",params$adm_level))
+plot_chlor(tanzania_adm1, df, params$adm_name, params$year, paste0("ADM",params$adm_level))
 ```
 
 

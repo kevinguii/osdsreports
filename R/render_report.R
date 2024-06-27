@@ -22,7 +22,7 @@ render_report <- function(df,adm_level,adm_name,year){
   quarto::quarto_render(
     input = here::here("quarto","report1.qmd"),
     execute_params = list(
-      df = jsonlite::toJSON(df,factor = 'integer'), # Serialize the data frame
+      df = jsonlite::toJSON(df,factor = 'string'), # Serialize the data frame
       adm_level = adm_level,
       adm_name = adm_name,
       year = year
