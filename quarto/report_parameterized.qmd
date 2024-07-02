@@ -1,0 +1,130 @@
+---
+title: "`r params$adm_name` in `r params$country_name`: `r params$year` "
+subtitle: "test test"
+params:
+  df: NONE
+  adm_level: 1
+  adm_name: NONE
+  country_name: NONE
+  year: 2020
+  
+  
+execute:
+  echo: false #show/hide code output
+  warning: false #suppress warnings
+  message: false #suppress messages
+  output: true #include output of code chunks
+  cache: false
+  freeze: false
+  
+format:
+  html:
+    toc: true
+    toc-depth: 4
+    toc-location: left
+    link-external-newwindow: true
+    embed-resources: true
+  pdf: 
+    toc: true
+    toc-depth: 4
+  
+knitr:
+  opts_chunk:
+    fig.width: 10
+    fig.height: 8
+    dev: 'png'
+    fig.align: 'center'
+  
+editor: visual
+format-links: false
+fig-align: left
+fig-width: 15
+fig-height: 5
+fig-dpi: 300
+---
+
+```{r setup, include = FALSE}
+#load all packages
+library(IPCpoputils)
+library(jsonlite)
+library(dplyr)
+library(knitr)
+source(here::here("R","utils_generate_blurb.R"))
+```
+
+```{r}
+#load all necessary data
+adm_level_match <- paste0("ADM",params$adm_level)
+df <- fromJSON(params$df,simplifyDataFrame = TRUE)
+levels <- unique(df$AGE_CAT)
+df$AGE_CAT <- factor(df$AGE_CAT,levels=levels)
+```
+
+```{r}
+# manipulate data to the provided parameters
+#filters data for year and ADM level
+#check to make sure valid adm_level, year, and adm_name provided
+if (params$adm_level %in% unique(df$ADM_LEVEL) & params$year %in% unique(df$YR) & toupper(params$adm_name) %in% df[[adm_level_match]]){
+  df_filtered <- df %>% filter(ADM_LEVEL == params$adm_level & 
+                                 YR == params$year &
+                                 !!sym(adm_level_match)==toupper(params$adm_name))
+} else{
+  stop("ERROR: either your adm_level given or your year does not exist or your adm_name doesn't exist")
+}
+```
+
+## Summary
+```{r}
+# Add a blurb at the top of the report to describe the population of the selected geography with the following information: (1) total population, (2) percentage male and female, (3) total population <5 years of age, (4) total working adult population (age 15-65)
+
+blurb_result <- generate_blurb(df_filtered)
+
+if (!is.null(blurb_result)) {
+  total_pop <- blurb_result[1]
+  percent_male <- blurb_result[2]
+  percent_female <- blurb_result[3]
+  total_less5 <- blurb_result[4]
+  total_working <- blurb_result[5]
+}
+```
+Total Population: `r total_pop`
+
+Percentage Male: `r percent_male`%
+
+Percentage Female: `r percent_female`%
+
+Total Population <5 years of age: `r total_less5`
+
+Total Working Adult Population: `r total_working`
+
+## Table
+```{r}
+kable(head(df))
+```
+
+
+## Pop Pyramid for `r params$adm_name`
+```{r}
+df_filtered_pyr <- df_filtered %>% filter(SEX!='B')
+plot_pyr(df_filtered_pyr, params$adm_name, '5')
+```
+
+
+## Choropleth Map: `r adm_level_match` `r params$year`
+```{r}
+###URGENT: change this so it can work dynamically
+shape_file <- paste0(tolower(params$country_name),"_adm",params$adm_level)
+
+if (exists(shape_file)){
+  plot_chlor(adm_sf = get(shape_file), 
+             pop_data = df, 
+             country = params$country_name, 
+             yr = params$year, 
+             adm_level = adm_level_match)
+} else{
+  stop("Execution halted due to missing or invalid data file.")
+}
+```
+
+
+
