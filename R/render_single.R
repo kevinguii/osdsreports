@@ -34,9 +34,8 @@ render_single <- function(df,adm_level,adm_name,country_name,year){
       year = year
     )
   )
-
-  output_dir <- fs::dir_create(here::here("reports"))
   file_name = paste0(adm_name,"_ADM",adm_level,"_",year)
+  output_dir <- fs::dir_create(here::here("reports",file_name))
   path = here::here("quarto")
 
   #move to /reports directory in /quarto directory

@@ -64,7 +64,7 @@ df$AGE_CAT <- factor(df$AGE_CAT,levels=levels)
 # manipulate data to the provided parameters
 #filters data for year and ADM level
 #check to make sure valid adm_level, year, and adm_name provided
-if (params$adm_level %in% unique(df$ADM_LEVEL) & params$year %in% unique(df$YR) & toupper(params$adm_name) %in% df[[adm_level_match]]){
+if ((params$adm_level %in% unique(df$ADM_LEVEL)) & (params$year %in% unique(df$YR)) & (toupper(params$adm_name) %in% df[[adm_level_match]])){
   df_filtered <- df %>% filter(ADM_LEVEL == params$adm_level & 
                                  YR == params$year &
                                  !!sym(adm_level_match)==toupper(params$adm_name))
@@ -116,10 +116,10 @@ plot_pyr(df_filtered_pyr, params$adm_name, '5')
 shape_file <- paste0(tolower(params$country_name),"_adm",params$adm_level)
 
 if (exists(shape_file)){
-  plot_chlor(adm_sf = get(shape_file), 
-             pop_data = df, 
-             country = params$country_name, 
-             yr = params$year, 
+  plot_chlor(adm_sf = get(shape_file),
+             pop_data = df,
+             country = params$country_name,
+             yr = params$year,
              adm_level = adm_level_match)
 } else{
   stop("Execution halted due to missing or invalid data file.")
