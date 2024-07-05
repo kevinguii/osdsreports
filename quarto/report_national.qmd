@@ -47,7 +47,7 @@ library(IPCpoputils)
 library(jsonlite)
 library(dplyr)
 library(knitr)
-source(here::here("R","utils_generate_blurb.R"))
+library(popreports)
 ```
 
 ```{r}

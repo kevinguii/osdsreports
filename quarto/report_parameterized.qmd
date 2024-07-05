@@ -1,6 +1,6 @@
 ---
 title: "`r params$adm_name` in `r params$country_name`: `r params$year` "
-subtitle: "test test"
+subtitle: "Hot Report"
 params:
   df: NONE
   adm_level: 1
@@ -18,16 +18,28 @@ execute:
   freeze: false
   
 format:
-  html:
-    toc: true
-    toc-depth: 4
-    toc-location: left
-    link-external-newwindow: true
-    embed-resources: true
+  # html:
+  #   toc: true
+  #   toc-depth: 4
+  #   toc-location: left
+  #   link-external-newwindow: true
+  #   embed-resources: true
+  #   theme: 'minty'
+  #   fontcolor: "#756BB1"
   pdf: 
-    toc: true
-    toc-depth: 4
-  
+    fig-width: 10
+    fig-height: 8
+    fig-align: "center"
+    #geometry: "margin=0.5in"
+    # include-in-header: 
+    #    - "styles.tex"
+    # include-before-body:
+    #  - "pagestyle.tex"
+    # toc: false
+    # code-block-bg: light
+    # linkcolor: highlight
+    # urlcolor: highlight
+
 knitr:
   opts_chunk:
     fig.width: 10
@@ -49,7 +61,19 @@ library(IPCpoputils)
 library(jsonlite)
 library(dplyr)
 library(knitr)
-source(here::here("R","utils_generate_blurb.R"))
+library(popreports)
+
+
+
+library(sf)
+library(ggplot2)
+library(tidyverse)
+library(patchwork)
+library(png)
+library(ggpubr)
+library(showtext); showtext_auto()
+library(gridtext)
+library(grid)
 ```
 
 ```{r}
@@ -97,30 +121,34 @@ Total Population <5 years of age: `r total_less5`
 
 Total Working Adult Population: `r total_working`
 
-## Table
 ```{r}
-kable(head(df))
-```
-
-
-## Pop Pyramid for `r params$adm_name`
-```{r}
+#| fig-cap: "This is a population pyramid for the given region"
 df_filtered_pyr <- df_filtered %>% filter(SEX!='B')
-plot_pyr(df_filtered_pyr, params$adm_name, '5')
+pop_pyr <- plot_pyr(df_filtered_pyr, params$adm_name, '5') + theme_map_pyr() +
+  plot_annotation(
+    title=paste0(params$country_name,": ",params$adm_name),
+    subtitle = "\nPopulation Pyramid",
+    theme = theme(plot.title = element_text(size = 26, color = "#54278F", face = "bold", family = "Lato"),
+                  plot.subtitle = element_text(size = 22, color = "#756BB1", face = "bold", family = "Lato"))
+  )
+
+pop_pyr
 ```
 
 
 ## Choropleth Map: `r adm_level_match` `r params$year`
 ```{r}
-###URGENT: change this so it can work dynamically
+
 shape_file <- paste0(tolower(params$country_name),"_adm",params$adm_level)
 
 if (exists(shape_file)){
-  plot_chlor(adm_sf = get(shape_file),
+  pop_chlor <- plot_chlor(adm_sf = get(shape_file),
              pop_data = df,
              country = params$country_name,
              yr = params$year,
-             adm_level = adm_level_match)
+             adm_level = adm_level_match) + theme_map_pyr()
+  
+  pop_chlor
 } else{
   stop("Execution halted due to missing or invalid data file.")
 }

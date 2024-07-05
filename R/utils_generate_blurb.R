@@ -1,15 +1,20 @@
-#' Generate blurb statistics
+#' Generate Blurb Statistics
 #'
-#' @description Given a dataframe, generate the statistics for the blurb at the top of the report
+#' @description Given a data frame of data (df), generates total population,
+#' percentage of males, percentage of females, total population below 5 years of
+#' age, and total working class people (age 15-65)
 #'
 #'
-#' @param df data provided
+#' @param df A data frame containing population data
 #'
-#' @import
 #'
-#' @returns 5 statistics
+#' @returns a list containing total population, percentage of population that is
+#' male, percentage of population that is female, total population of individuals
+#' below 5 years of age, and total population that is in the working class
 #'
-#' @export
+#' @examples
+#' generate_blurb(country_data)
+#'
 
 generate_blurb <- function(df){
 

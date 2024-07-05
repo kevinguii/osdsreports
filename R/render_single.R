@@ -1,20 +1,28 @@
-#' Render a Report for a given ADM, ADM_LVL and YR
+#' Render a Single Parameterized Report
 #'
-#' @description Given an ADM shapefile (adm_sf) and population data (pop_data),
-#' returns a choropleth plot containing scaled population values. Defaults to
-#' log transformed population.
+#' @description Given a data frame containing population data (df), a specified
+#' administrative level (adm_level), the name of the region (adm_name), the
+#' name of the country (country_name), and the year (yr), return a single
+#' report based on the given parameters
 #'
+#' @author Kevin Gui
 #'
-#' @param df data provided
+#' @param df A data frame provided
 #' @param adm_level A numeric specifying ADM level
 #' @param adm_name A string specifying the name of the ADM
+#' @param country_name A string of the name of the country
 #' @param year A numeric specifying year
 #'
 #' @import quarto
 #' @import fs
 #' @import here
+#' @import jsonlite
 #'
-#' @returns A population pyramid
+#' @returns renders a single report stored in the /reports/ directory
+#'
+#' @examples
+#' render_single(country_data,1,"California","USA",2017)
+#'
 #'
 #' @export
 

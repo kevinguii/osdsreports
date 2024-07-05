@@ -1,20 +1,29 @@
-#' Render a Report for a given ADM, ADM_LVL and YR
+#' Batch Render Reports for an ADM Level
 #'
-#' @description Given an ADM shapefile (adm_sf) and population data (pop_data),
-#' returns a choropleth plot containing scaled population values. Defaults to
-#' log transformed population.
+#' @description Given a data frame of data (df), a specified administrative
+#' level (adm_level), the name of the country (country_name), and a specified
+#' year (year), generates a batch of reports for every unique entity in the
+#' given administrative level
+#'
+#' @author Kevin Gui
 #'
 #'
-#' @param df data provided
+#' @param df A data frame containing population data
 #' @param adm_level A numeric specifying ADM level
-#' @param adm_name A string specifying the name of the ADM
+#' @param country_name A string of the name of the country
 #' @param year A numeric specifying year
 #'
 #' @import quarto
 #' @import fs
 #' @import here
+#' @import jsonlite
 #'
-#' @returns A population pyramid
+#' @returns renders all reports report stored in a folder in the /reports/
+#' directory
+#'
+#' @examples
+#' render_all(country_data,1,"USA",2017 )
+#'
 #'
 #' @export
 
@@ -22,11 +31,6 @@
 # DOES NOT WORK YET
 ###
 
-# df: NONE
-# adm_level: 1
-# adm_name: NONE
-# country_name: NONE
-# year: 2020
 render_all <- function(df,adm_level,country_name,year){
   adm_level_match <- paste0("ADM",adm_level)
   for (adm_name in unique(df[[adm_level_match]])){
