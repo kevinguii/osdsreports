@@ -1,6 +1,7 @@
 ---
 title: "`r params$adm_name` in `r params$country_name`: `r params$year` "
 subtitle: "Hot Report"
+
 params:
   df: NONE
   adm_level: 1
@@ -8,14 +9,11 @@ params:
   country_name: NONE
   year: 2020
   
-  
 execute:
   echo: false #show/hide code output
   warning: false #suppress warnings
   message: false #suppress messages
   output: true #include output of code chunks
-  cache: false
-  freeze: false
   
 format:
   # html:
@@ -30,29 +28,21 @@ format:
     fig-width: 10
     fig-height: 8
     fig-align: "center"
-    #geometry: "margin=0.5in"
+    geometry: 
+      - margin = 0.5in
+      - bottom = 1.3in
     # include-in-header: 
     #    - "styles.tex"
     # include-before-body:
     #  - "pagestyle.tex"
-    # toc: false
-    # code-block-bg: light
-    # linkcolor: highlight
-    # urlcolor: highlight
-
+    
+header-includes:
+  - \input{_extensions/styles.tex}
+  
 knitr:
   opts_chunk:
-    fig.width: 10
-    fig.height: 8
-    dev: 'png'
-    fig.align: 'center'
-  
-editor: visual
-format-links: false
-fig-align: left
-fig-width: 15
-fig-height: 5
-fig-dpi: 300
+    dpi: 200
+    dev: "png"
 ---
 
 ```{r setup, include = FALSE}
@@ -62,18 +52,16 @@ library(jsonlite)
 library(dplyr)
 library(knitr)
 library(popreports)
-
-
-
-library(sf)
 library(ggplot2)
-library(tidyverse)
-library(patchwork)
 library(png)
 library(ggpubr)
+library(patchwork)
+library(jpeg)
+library(grid)
+library(sf)
+library(tidyverse)
 library(showtext); showtext_auto()
 library(gridtext)
-library(grid)
 ```
 
 ```{r}
@@ -97,7 +85,6 @@ if ((params$adm_level %in% unique(df$ADM_LEVEL)) & (params$year %in% unique(df$Y
 }
 ```
 
-## Summary
 ```{r}
 # Add a blurb at the top of the report to describe the population of the selected geography with the following information: (1) total population, (2) percentage male and female, (3) total population <5 years of age, (4) total working adult population (age 15-65)
 
@@ -111,48 +98,62 @@ if (!is.null(blurb_result)) {
   total_working <- blurb_result[5]
 }
 ```
+**Summary**
+
 Total Population: `r total_pop`
 
 Percentage Male: `r percent_male`%
 
 Percentage Female: `r percent_female`%
 
-Total Population <5 years of age: `r total_less5`
+Total Population \<5 years of age: `r total_less5`
 
 Total Working Adult Population: `r total_working`
 
+```{r,fig.height=5,fig.align='center',fig.format='png'}
+#Title Page Shape File
+shape_file <- paste0(tolower(params$country_name),"_adm",params$adm_level)
+
+if (exists(shape_file)){
+  shape_file <- get(shape_file)
+  ggplot() +
+    geom_sf(data = shape_file,fill="white",color="black") +
+    geom_sf(data = shape_file[shape_file$AREA_NAME == toupper(params$adm_name), ], fill = "#54278F", color = "black") +
+    theme_void()
+} else{
+    stop("Execution halted due to missing or invalid data file.")
+}
+```
+
+\newpage
 ```{r}
-#| fig-cap: "This is a population pyramid for the given region"
-df_filtered_pyr <- df_filtered %>% filter(SEX!='B')
+df_filtered_pyr <- df_filtered %>% filter(SEX != 'B')
+
+# Create the population pyramid plot
 pop_pyr <- plot_pyr(df_filtered_pyr, params$adm_name, '5') + theme_map_pyr() +
-  plot_annotation(
-    title=paste0(params$country_name,": ",params$adm_name),
-    subtitle = "\nPopulation Pyramid",
-    theme = theme(plot.title = element_text(size = 26, color = "#54278F", face = "bold", family = "Lato"),
-                  plot.subtitle = element_text(size = 22, color = "#756BB1", face = "bold", family = "Lato"))
-  )
+              plot_annotation(
+                title=paste0(params$country_name,": ",adm_level_match),
+                subtitle = "\nPopulation Pyramid",
+                theme = theme(plot.title = element_text(size = 26, color = "#54278F", face = "bold", family = "Lato"),
+                              plot.subtitle = element_text(size = 22, color = "#756BB1", face = "bold", family = "Lato"))
+              )
 
 pop_pyr
 ```
 
-
-## Choropleth Map: `r adm_level_match` `r params$year`
+\newpage
 ```{r}
+# Choropleth Map
+joined_data <- join_data_to_shp(df,shape_file,adm_level_match,params$year)
+pop_chlor <- plot_chlor(joined_df = joined_data,
+           country = params$country_name,
+           yr = params$year) + theme_map_chlor() +
+            plot_annotation(
+              title=paste0(params$country_name,": ",adm_level_match),
+              subtitle = "\nChoropleth Map",
+              theme = theme(plot.title = element_text(size = 26, color = "#54278F", face = "bold", family = "Lato"),
+                            plot.subtitle = element_text(size = 22, color = "#756BB1", face = "bold", family = "Lato"))
+            )
 
-shape_file <- paste0(tolower(params$country_name),"_adm",params$adm_level)
-
-if (exists(shape_file)){
-  pop_chlor <- plot_chlor(adm_sf = get(shape_file),
-             pop_data = df,
-             country = params$country_name,
-             yr = params$year,
-             adm_level = adm_level_match) + theme_map_pyr()
-  
-  pop_chlor
-} else{
-  stop("Execution halted due to missing or invalid data file.")
-}
+pop_chlor
 ```
-
-
-

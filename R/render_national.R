@@ -25,26 +25,14 @@
 #' @export
 
 render_national <- function(df,country_name,year){
-  quarto::quarto_render(
-    input = here::here("quarto","report_national.qmd"),
-    output_format = "all",
-    execute_params = list(
-      df = jsonlite::toJSON(df,factor = 'string'),
-      country_name = country_name,
-      year = year
-    )
-  )
-  file_name = paste0(country_name,"_",year)
+
+  validate_parameters(adm_level=0,df=df,year=year,parameterized = FALSE)
+
+  render_quarto_document(df=df,country_name = country_name, year = year, parameterized = FALSE)
+
+  file_name = paste0(toupper(country_name),"_ADM0_",year)
   output_dir <- fs::dir_create(here::here("reports",file_name))
-  path = here::here("quarto")
 
-  #move to /reports directory in /quarto directory
-  files <- fs::dir_ls(here::here("quarto"), regexp = ".html$|.docx$|.pdf$")
-  new_file_names <- sapply(files, function(file) rename_file(file,file_name))
+  move_rendered_files(file_name, output_dir)
 
-  for (i in seq_along(files)) {
-    old_path <- files[i]
-    new_path <- fs::path(output_dir, new_file_names[i])
-    fs::file_move(old_path, new_path)
-  }
 }

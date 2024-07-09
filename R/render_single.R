@@ -27,33 +27,14 @@
 #' @export
 
 render_single <- function(df,adm_level,adm_name,country_name,year){
-  if(adm_level==0){
-    stop("Please use render_national function to render a national report")
-  }
 
-  quarto::quarto_render(
-    input = here::here("quarto","report_parameterized.qmd"),
-    output_format = "all",
-    execute_params = list(
-      df = jsonlite::toJSON(df,factor = 'string'), # Serialize the data frame
-      adm_level = adm_level,
-      adm_name = adm_name,
-      country_name = country_name,
-      year = year
-    )
-  )
-  file_name = paste0(adm_name,"_ADM",adm_level,"_",year)
+  validate_parameters(adm_level, adm_name, df, year,parameterized=TRUE)
+
+  render_quarto_document(df, adm_level, adm_name, country_name, year,parameterized=TRUE)
+
+  file_name = paste0(toupper(adm_name),"_ADM",adm_level,"_",year)
   output_dir <- fs::dir_create(here::here("reports",file_name))
-  path = here::here("quarto")
 
-  #move to /reports directory in /quarto directory
-  files <- fs::dir_ls(here::here("quarto"), regexp = ".html$|.docx$|.pdf$")
-  new_file_names <- sapply(files, function(file) rename_file(file,file_name))
-
-  for (i in seq_along(files)) {
-    old_path <- files[i]
-    new_path <- fs::path(output_dir, new_file_names[i])
-    fs::file_move(old_path, new_path)
-  }
+  move_rendered_files(file_name, output_dir)
 
 }
