@@ -1,14 +1,13 @@
 Package: popreports
 Type: Package
-Title: What the Package Does (Title Case)
+Title: A suite of tools for parameterized reporting for U.S. Census Bureau datasets from the International Programs Center
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Authors@R: person("Kevin", "Gui", email = "kevin.j.gui@census.gov", role = c("cre", "aut"))
+Description: A suite of utility functions that help convert various census datasets to 1-2 page hot reports.
 Encoding: UTF-8
 LazyData: true
 Imports: 
     IPCpoputils
+Depends: 
+    R (>= 2.10)
 RoxygenNote: 7.3.1
