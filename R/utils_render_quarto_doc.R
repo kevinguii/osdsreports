@@ -8,11 +8,11 @@
 #' @param country_name A string of the name of the country
 #' @param year A numeric specifying year
 #'
-render_quarto_document <- function(df=NULL, adm_level=NULL, adm_name=NULL, country_name=NULL, year=NULL,parameterized=TRUE) {
+render_quarto_document <- function(df=NULL, adm_level=NULL, adm_name=NULL, country_name=NULL, year=NULL, output_file, parameterized=TRUE) {
   if (parameterized){
     quarto::quarto_render(
       input = here::here("quarto", "report_parameterized.qmd"),
-      output_format = "all",
+      output_file = output_file,
       execute_params = list(
         df = jsonlite::toJSON(df, factor = 'string'),
         adm_level = adm_level,
@@ -24,7 +24,7 @@ render_quarto_document <- function(df=NULL, adm_level=NULL, adm_name=NULL, count
   } else{
     quarto::quarto_render(
       input = here::here("quarto","report_national.qmd"),
-      output_format = "all",
+      output_file = output_file,
       execute_params = list(
         df = jsonlite::toJSON(df,factor = 'string'),
         country_name = country_name,

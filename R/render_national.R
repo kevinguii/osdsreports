@@ -10,6 +10,7 @@
 #' @param df A data frame provided
 #' @param country_name A string of the name of the country
 #' @param year A numeric specifying year
+#' @param output_file Path to save the rendered document
 #'
 #' @import quarto
 #' @import fs
@@ -24,11 +25,11 @@
 #'
 #' @export
 
-render_national <- function(df,country_name,year){
+render_national <- function(df,country_name,year,output_file){
 
   validate_parameters(adm_level=0,df=df,year=year,parameterized = FALSE)
 
-  render_quarto_document(df=df,country_name = country_name, year = year, parameterized = FALSE)
+  render_quarto_document(df=df,country_name = country_name, year = year, output_file = output_file, parameterized = FALSE)
 
   # file_name = paste0(toupper(country_name),"_ADM0_",year)
   # output_dir <- fs::dir_create(here::here("reports",file_name))
