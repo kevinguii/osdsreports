@@ -25,12 +25,14 @@
 #'
 #' @export
 
-render_national <- function(df,country_name,year,output_file,output_dir){
+render_national <- function(df,country_name,year,output_dir){
 
   validate_parameters(adm_level=0,df=df,year=year,parameterized = FALSE)
 
-  render_quarto_document(df=df,country_name = country_name, year = year, output_file = output_file, parameterized = FALSE)
+  render_quarto_document(df=df,country_name = country_name, year = year, parameterized = FALSE)
 
+  file_name = paste0(toupper(country_name),"_ADM0_",year)
+  output_dir <- fs::dir_create(paste0(output_dir,"/",file_name))
 
   move_rendered_files(file_name, output_dir)
 
