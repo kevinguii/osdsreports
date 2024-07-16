@@ -3,10 +3,12 @@
 #' @description Render the Quarto document with the given parameters.
 #'
 #' @param df A data frame provided
+#' @param shp A shape file
 #' @param adm_level A numeric specifying ADM level
 #' @param adm_name A string specifying the name of the ADM
 #' @param country_name A string of the name of the country
 #' @param year A numeric specifying year
+#'
 #'
 render_quarto_document <- function(df=NULL, shp=NULL, adm_level=NULL, adm_name=NULL, country_name=NULL, year=NULL, parameterized=TRUE) {
 

@@ -8,6 +8,7 @@
 #' @param year A numeric specifying year
 #'
 #' @returns nothing; stops execution if parameters are invalid
+#'
 
 validate_parameters <- function(adm_level=0, adm_name=NULL, df=NULL, year=NULL, parameterized=TRUE) {
 

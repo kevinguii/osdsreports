@@ -8,6 +8,7 @@
 #' @author Kevin Gui
 #'
 #' @param df A data frame provided
+#' @param shp A shape file
 #' @param adm_level A numeric specifying ADM level
 #' @param adm_name A string specifying the name of the ADM
 #' @param country_name A string of the name of the country
