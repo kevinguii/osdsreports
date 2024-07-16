@@ -15,7 +15,7 @@ render_quarto_document <- function(df=NULL, shp=NULL, adm_level=NULL, adm_name=N
       input = here::here("quarto", "report_parameterized.qmd"),
       execute_params = list(
         df = jsonlite::toJSON(df, factor = 'string'),
-        shp = sf_geojson(shp),
+        shp = sf::sf_geojson(shp),
         adm_level = adm_level,
         adm_name = adm_name,
         country_name = country_name,
