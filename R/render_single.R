@@ -17,6 +17,7 @@
 #' @import fs
 #' @import here
 #' @import jsonlite
+#' @import geojsonsf
 #'
 #' @returns renders a single report stored in the /reports/ directory
 #'
