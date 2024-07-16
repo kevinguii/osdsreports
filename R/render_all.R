@@ -27,12 +27,9 @@ render_all <- function(df,adm_level,country_name,year){
   adm_level_match <- paste0("ADM",adm_level)
   for (adm_name in unique(df[[adm_level_match]])){
 
+    validate_parameters(adm_level, adm_name, df, year,parameterized=TRUE)
+
     render_quarto_document(df, adm_level, adm_name, country_name, year,parameterized=TRUE)
-
-    file_name = paste0(adm_name,"_ADM",adm_level,"_",year)
-    output_dir <- fs::dir_create(here::here("reports",file_name))
-
-    move_rendered_files(file_name, output_dir)
 
   }
 

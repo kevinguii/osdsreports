@@ -32,9 +32,4 @@ render_single <- function(df,adm_level,adm_name,country_name,year){
 
   render_quarto_document(df, adm_level, adm_name, country_name, year,parameterized=TRUE)
 
-  file_name = paste0(toupper(adm_name),"_ADM",adm_level,"_",year)
-  output_dir <- fs::dir_create(here::here("reports",file_name))
-
-  move_rendered_files(file_name, output_dir)
-
 }

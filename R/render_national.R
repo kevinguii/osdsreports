@@ -31,8 +31,4 @@ render_national <- function(df,country_name,year,output_dir){
 
   render_quarto_document(df=df,country_name = country_name, year = year, parameterized = FALSE)
 
-  # output_dir <- fs::dir_create(output_dir)
-  #
-  # move_rendered_files(output_dir)
-
 }
