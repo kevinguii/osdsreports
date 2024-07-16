@@ -9,7 +9,7 @@
 #'
 #' @returns nothing; stops execution if parameters are invalid
 
-validate_parameters <- function(adm_level=0, adm_name=NULL, df=NULL, year=NULL,parameterized=TRUE) {
+validate_parameters <- function(adm_level=0, adm_name=NULL, df=NULL, year=NULL, parameterized=TRUE) {
 
   if (!(year %in% unique(df$YR))) {
     stop("Invalid year provided")
