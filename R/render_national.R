@@ -25,7 +25,7 @@
 #'
 #' @export
 
-render_national <- function(df,country_name,year,output_dir){
+render_national <- function(df,country_name,year){
 
   validate_parameters(adm_level=0,df=df,year=year,parameterized = FALSE)
 
