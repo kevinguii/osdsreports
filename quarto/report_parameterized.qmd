@@ -3,12 +3,12 @@ title: "`r params$adm_name` in `r params$country_name`: `r params$year` "
 subtitle: "Hot Report"
 
 params:
-  df: NONE
-  shp: NONE
-  adm_level: NONE
-  adm_name: NONE
-  country_name: NONE
-  year: NONE
+  df: ""
+  shp: ""
+  adm_level: ""
+  adm_name: ""
+  country_name: ""
+  year: ""
   
 execute:
   echo: false #show/hide code output
