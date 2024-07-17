@@ -23,16 +23,23 @@
 #'
 #' @export
 
-render_all <- function(df,adm_level,country_name,year){
+render_all <- function(df, shp, adm_level, country_name, year){
   adm_level_match <- paste0("ADM",adm_level)
+
   for (adm_name in unique(df[[adm_level_match]])){
 
-    validate_parameters(adm_level, adm_name, df, year,parameterized=TRUE)
+    validate_parameters(adm_level, adm_name, df, year, parameterized=TRUE)
 
-    render_quarto_document(df, adm_level, adm_name, country_name, year,parameterized=TRUE)
-
+    render_quarto_document(df, shp, adm_level, adm_name, country_name, year, parameterized=TRUE, batch=TRUE)
   }
 
+  prev_dir <- getwd()
+  setwd('./quarto')
+  pdf_files <- list.files(pattern = "\\.pdf$", full.names = TRUE)
+  zip_name <- paste0(country_name,"_ADM",adm_level,"_BATCH.zip")
+  zip(zip_name,pdf_files)
+  file.remove(pdf_files)
+  setwd(prev_dir)
 
 }
 

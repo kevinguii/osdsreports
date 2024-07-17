@@ -10,9 +10,23 @@
 #' @param year A numeric specifying year
 #'
 #'
-render_quarto_document <- function(df=NULL, shp=NULL, adm_level=NULL, adm_name=NULL, country_name=NULL, year=NULL, parameterized=TRUE) {
+render_quarto_document <- function(df=NULL, shp=NULL, adm_level=NULL, adm_name=NULL, country_name=NULL, year=NULL, parameterized=TRUE, batch = FALSE) {
+  if (batch){
+    quarto::quarto_render(
+      input = here::here("quarto", "report_parameterized.qmd"),
+      execute_params = list(
+        df = jsonlite::toJSON(df, factor = 'string'),
+        shp = geojsonsf::sf_geojson(shp),
+        adm_level = adm_level,
+        adm_name = adm_name,
+        country_name = country_name,
+        year = year
+      )
+    )
+    new_file_name <- paste0(here::here("quarto"),"/",adm_name,"_ADM",adm_level,".pdf")
+    file.rename(here::here("quarto","report_parameterized.pdf"),new_file_name)
 
-  if (parameterized){
+  } else if (parameterized){
     quarto::quarto_render(
       input = here::here("quarto", "report_parameterized.qmd"),
       execute_params = list(
