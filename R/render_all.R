@@ -26,7 +26,7 @@
 render_all <- function(df, shp, adm_level, country_name, year){
   adm_level_match <- paste0("ADM",adm_level)
 
-  for (adm_name in unique(df[[adm_level_match]])){
+  for (adm_name in setdiff(unique(df[[adm_level_match]]),NA)){
 
     validate_parameters(adm_level, adm_name, df, year, parameterized=TRUE)
 
