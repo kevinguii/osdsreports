@@ -36,8 +36,7 @@ render_all <- function(df, shp, adm_level, country_name, year){
   prev_dir <- getwd()
   setwd('./quarto')
   pdf_files <- list.files(pattern = "\\.pdf$", full.names = TRUE)
-  zip_name <- paste0(country_name,"_ADM",adm_level,"_BATCH.zip")
-  zip(zip_name,pdf_files)
+  zip("report_batch.zip",pdf_files)
   file.remove(pdf_files)
   setwd(prev_dir)
 
