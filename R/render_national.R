@@ -8,6 +8,7 @@
 
 #'
 #' @param df A data frame provided
+#' @param shp A shape file
 #' @param country_name A string of the name of the country
 #' @param year A numeric specifying year
 #' @param output_file Path to save the rendered document
@@ -17,18 +18,18 @@
 #' @import here
 #' @import jsonlite
 #'
-#' @returns renders a single national report stored in the /reports/ directory
+#' @returns renders a single national report for the given country
 #'
 #' @examples
-#' render_national(country_data,"USA",2017)
+#' render_national(country_data,adm0_shpae,"USA",2017)
 #'
 #'
 #' @export
 
-render_national <- function(df,country_name,year){
+render_national <- function(df, shp, country_name, year){
 
   validate_parameters(adm_level=0,df=df,year=year,parameterized = FALSE)
 
-  render_quarto_document(df=df,country_name = country_name, year = year, parameterized = FALSE)
+  render_quarto_document(df=df, shp=shp, country_name = country_name, year = year, parameterized = FALSE)
 
 }

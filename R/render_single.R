@@ -20,10 +20,10 @@
 #' @import jsonlite
 #' @import geojsonsf
 #'
-#' @returns renders a single report stored in the /reports/ directory
+#' @returns renders a single report
 #'
 #' @examples
-#' render_single(country_data,1,"California","USA",2017)
+#' render_single(country_data,1,adm_1_shape,"California","USA",2017)
 #'
 #'
 #' @export

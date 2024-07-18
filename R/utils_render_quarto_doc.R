@@ -8,6 +8,8 @@
 #' @param adm_name A string specifying the name of the ADM
 #' @param country_name A string of the name of the country
 #' @param year A numeric specifying year
+#' @param parameterized Whether asking for a parameterized report or not
+#' @param batch Whether asking for a batch report or not
 #'
 #'
 render_quarto_document <- function(df=NULL, shp=NULL, adm_level=NULL, adm_name=NULL, country_name=NULL, year=NULL, parameterized=TRUE, batch = FALSE) {
@@ -43,6 +45,7 @@ render_quarto_document <- function(df=NULL, shp=NULL, adm_level=NULL, adm_name=N
       input = here::here("quarto","report_national.qmd"),
       execute_params = list(
         df = jsonlite::toJSON(df,factor = 'string'),
+        shp = geojsonsf::sf_geojson(shp),
         country_name = country_name,
         year = year
       )

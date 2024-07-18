@@ -89,7 +89,7 @@ if ((params$adm_level %in% unique(df$ADM_LEVEL)) & (params$year %in% unique(df$Y
 ```
 
 ```{r}
-# Add a blurb at the top of the report to describe the population of the selected geography with the following information: (1) total population, (2) percentage male and female, (3) total population <5 years of age, (4) total working adult population (age 15-65)
+# Add a blurb at the top of the report to describe the important key statistics
 
 blurb_result <- generate_blurb(df_filtered)
 
@@ -114,6 +114,7 @@ Total Population \<5 years of age: `r total_less5`
 Total Working Adult Population: `r total_working`
 
 ```{r,fig.height=5,fig.align='center',fig.format='png'}
+#title page shapefile graphic
 ggplot() +
   geom_sf(data = shape_file,fill="white",color="black") +
   geom_sf(data = shape_file[shape_file$AREA_NAME == toupper(params$adm_name), ], fill = "#54278F", color = "black") +

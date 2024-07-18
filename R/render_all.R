@@ -9,16 +9,16 @@
 #'
 #'
 #' @param df A data frame containing population data
+#' @param shp A shape file
 #' @param adm_level A numeric specifying ADM level
 #' @param country_name A string of the name of the country
 #' @param year A numeric specifying year
 #'
 #'
-#' @returns renders all reports report stored in a folder in the /reports/
-#' directory
+#' @returns renders all reports for an ADM level
 #'
 #' @examples
-#' render_all(country_data,1,"USA",2017)
+#' render_all(country_data,adm_1,shape,1,"USA",2017)
 #'
 #'
 #' @export
@@ -26,6 +26,7 @@
 render_all <- function(df, shp, adm_level, country_name, year){
   adm_level_match <- paste0("ADM",adm_level)
 
+  #render all files
   for (adm_name in setdiff(unique(df[[adm_level_match]]),NA)){
 
     validate_parameters(adm_level, adm_name, df, year, parameterized=TRUE)
@@ -33,6 +34,7 @@ render_all <- function(df, shp, adm_level, country_name, year){
     render_quarto_document(df, shp, adm_level, adm_name, country_name, year, parameterized=TRUE, batch=TRUE)
   }
 
+  #zip all files
   prev_dir <- getwd()
   setwd('./quarto')
   pdf_files <- list.files(pattern = "\\.pdf$", full.names = TRUE)

@@ -1,9 +1,8 @@
-#' Batch Render Reports for an ADM Level
+#' A theme map for plots in the reports
 #'
 #' @description
 #'
 #' @author Kevin Gui
-
 #'
 #' @import sf
 #' @import ggplot2
@@ -14,10 +13,7 @@
 #' @import showtext
 #' @import gridtext
 #' @import grid
-#'
-#' @returns
-#'
-#' @examples
+
 
 theme_map_pyr <- function(...){
   theme(

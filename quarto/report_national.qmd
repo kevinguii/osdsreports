@@ -2,9 +2,10 @@
 title: "`r params$country_name`: `r params$year` "
 subtitle: "National Report"
 params:
-  df: NONE
-  country_name: NONE
-  year: 2024
+  df: ""
+  shp: ""
+  country_name: ""
+  year: ""
   
 execute:
   echo: false #show/hide code output
@@ -43,6 +44,7 @@ library(ggplot2)
 library(png)
 library(ggpubr)
 library(patchwork)
+library(geojsonsf)
 library(jpeg)
 library(grid)
 library(sf)
@@ -56,6 +58,7 @@ library(gridtext)
 df <- fromJSON(params$df,simplifyDataFrame = TRUE)
 levels <- unique(df$AGE_CAT)
 df$AGE_CAT <- factor(df$AGE_CAT,levels=levels)
+shape_file <- geojson_sf(params$shp)
 ```
 
 ```{r}
@@ -69,7 +72,7 @@ if (params$year %in% unique(df$YR) & 0 %in% unique(df$ADM_LEVEL)){
 ```
 
 ```{r}
-# Add a blurb at the top of the report to describe the population of the selected geography with the following information: (1) total population, (2) percentage male and female, (3) total population <5 years of age, (4) total working adult population (age 15-65)
+# Add a blurb at the top of the report to describe important, key statistics
 
 blurb_result <- generate_blurb(df_filtered)
 
@@ -95,8 +98,6 @@ Total Working Adult Population: `r total_working`
 
 ```{r,fig.height=5,fig.align='center',fig.format='png'}
 #Title Page Shape File
-shape_file <- get(paste0(tolower(params$country_name),"_adm0"))
-
 ggplot() +
   geom_sf(data = shape_file,fill="white",color="black") +
   theme_void()
