@@ -28,6 +28,8 @@
 
 render_national <- function(df, shp, country_name, year){
 
+  country_name = stringr::str_to_title(tolower(country_name))
+
   validate_parameters(adm_level=0,df=df,year=year,parameterized = FALSE)
 
   render_quarto_document(df=df, shp=shp, country_name = country_name, year = year, parameterized = FALSE)
