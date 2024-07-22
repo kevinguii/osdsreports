@@ -109,8 +109,11 @@ In `r params$year`, Tanzania's was `r total_pop`. In the demographic composition
 
 ```{r}
 #national population pyramid, pre-filtering data
-df_national <- df_filtered %>% filter(SEX!='B')
-pop_pyr <- plot_pyr(df_national, params$country_name, '5') 
+pop_pyr <- plot_pyr(df_filtered, params$country_name, '5') +
+            plot_annotation(
+              subtitle = "Population Pyramid",
+              theme = theme(plot.subtitle = element_text(size = 22, color = "#756BB1", face = "bold", family = "Lato"))
+            )
 pop_pyr
 ```
 

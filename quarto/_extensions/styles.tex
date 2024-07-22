@@ -2,10 +2,14 @@
 \usepackage{graphicx}
 \usepackage{xcolor}
 \usepackage[export]{adjustbox}
+\usepackage{lato}
 \pagestyle{fancy}
 \fancyfoot[L]{\raisebox{0.7cm}{\includegraphics[height=3cm,valign=t]{_extensions/logo.png}}}
 \fancyfoot[C]{\raisebox{0.7cm}{\includegraphics[height=3cm,valign=t]{_extensions/new_nso.png}}}
-\fancyfoot[R]{\small
+\fancyfoot[R]{%
+    \fontsize{10}{12}\selectfont % Adjust the font size and baselineskip here
+    \lato % Apply the Lato font
     \textbf{Contact Information:}
     \\Phone: +44 345 601 3034
-    \\Email: census.customerservices@ons.gov.uk}
+    \\Email: census.customerservices@ons.gov.uk
+}

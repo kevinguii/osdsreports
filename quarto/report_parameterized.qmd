@@ -1,7 +1,4 @@
 ---
-title: "`r params$adm_name` in `r params$country_name`: `r params$year` "
-subtitle: "Hot Report"
-
 params:
   df: ""
   shp: ""
@@ -16,15 +13,8 @@ execute:
   message: false #suppress messages
   output: true #include output of code chunks
   
+pdf-engine: xelatex
 format:
-  # html:
-  #   toc: true
-  #   toc-depth: 4
-  #   toc-location: left
-  #   link-external-newwindow: true
-  #   embed-resources: true
-  #   theme: 'minty'
-  #   fontcolor: "#756BB1"
   pdf: 
     fig-width: 10
     fig-height: 8
@@ -32,11 +22,8 @@ format:
     geometry: 
       - margin = 0.5in
       - bottom = 1.3in
-    # include-in-header: 
-    #    - "styles.tex"
-    # include-before-body:
-    #  - "pagestyle.tex"
-    
+      - top = 0.5in
+
 header-includes:
   - \input{_extensions/styles.tex}
   
@@ -64,6 +51,7 @@ library(sf)
 library(tidyverse)
 library(showtext); showtext_auto()
 library(gridtext)
+library(gridExtra)
 ```
 
 ```{r}
@@ -80,12 +68,31 @@ df$AGE_CAT <- factor(df$AGE_CAT,levels=levels)
 #filters data for year and ADM level
 #check to make sure valid adm_level, year, and adm_name provided
 if ((params$adm_level %in% unique(df$ADM_LEVEL)) & (params$year %in% unique(df$YR)) & (toupper(params$adm_name) %in% df[[adm_level_match]])){
-  df_filtered <- df %>% filter(ADM_LEVEL == params$adm_level & 
+  df_filtered <- df %>% filter(ADM_LEVEL == params$adm_level & SEX!='B' &
                                  YR == params$year &
                                  !!sym(adm_level_match)==toupper(params$adm_name))
 } else{
   stop("ERROR: either your adm_level given or your year does not exist or your adm_name doesn't exist")
 }
+```
+
+```{r,fig.height = 1}
+#Title Text/Plot
+title_text <- ggplot() +
+                theme_void() +
+                labs(title = paste0(params$adm_name,", ",params$country_name, " Demographics in ", params$year),
+                     subtitle = "Subnational Report") +
+                theme(
+                  plot.title = element_text(size = 26, color = "#54278F", face = "bold", family = "Lato"),
+                  plot.subtitle = element_text(size = 22, color = "#756BB1", family = "Lato")                
+                  )
+  
+title_shp_file <- ggplot() +
+                    geom_sf(data = shape_file,fill="white",color="black") +
+                    geom_sf(data = shape_file[shape_file$AREA_NAME == toupper(params$adm_name), ], fill = "#54278F", color = "black") +
+                    theme_void()
+
+grid.arrange(title_text,title_shp_file,nrow=1, widths = c(3,1))
 ```
 
 ```{r}
@@ -103,39 +110,19 @@ if (!is.null(blurb_result)) {
 ```
 **Summary**
 
-Total Population: `r total_pop`
+In `r params$year`, Tanzania's was `r total_pop`. In the demographic composition, males accounted for `r percent_male`% of the population and females `r percent_female`%. The country had a young population of `r total_less5` children under the age of 5. Meanwhile, the working-age adult population, a key driver of the nation's economy, numbered `r total_working`.
 
-Percentage Male: `r percent_male`%
-
-Percentage Female: `r percent_female`%
-
-Total Population \<5 years of age: `r total_less5`
-
-Total Working Adult Population: `r total_working`
-
-```{r,fig.height=5,fig.align='center',fig.format='png'}
-#title page shapefile graphic
-ggplot() +
-  geom_sf(data = shape_file,fill="white",color="black") +
-  geom_sf(data = shape_file[shape_file$AREA_NAME == toupper(params$adm_name), ], fill = "#54278F", color = "black") +
-  theme_void()
-```
-
-\newpage
 ```{r}
-df_filtered_pyr <- df_filtered %>% filter(SEX != 'B')
-
-# Create the population pyramid plot
-pop_pyr <- plot_pyr(df_filtered_pyr, params$adm_name, '5') + theme_map_pyr() +
-              plot_annotation(
-                title=paste0(params$country_name,": ",adm_level_match),
-                subtitle = "\nPopulation Pyramid",
-                theme = theme(plot.title = element_text(size = 26, color = "#54278F", face = "bold", family = "Lato"),
-                              plot.subtitle = element_text(size = 22, color = "#756BB1", face = "bold", family = "Lato"))
-              )
+pop_pyr <- plot_pyr(df_filtered, params$adm_name, '5') +
+            plot_annotation(
+              subtitle = "Population Pyramid",
+              theme = theme(plot.subtitle = element_text(size = 22, color = "#756BB1", face = "bold", family = "Lato"))
+            )
 
 pop_pyr
 ```
+
+Caption/Description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
 
 \newpage
 ```{r}
@@ -143,13 +130,13 @@ pop_pyr
 joined_data <- join_data_to_shp(df,shape_file,adm_level_match,params$year)
 pop_chlor <- plot_chlor(joined_df = joined_data,
            country = params$country_name,
-           yr = params$year) + theme_map_chlor() +
+           yr = params$year) +
             plot_annotation(
-              title=paste0(params$country_name,": ",adm_level_match),
               subtitle = "Choropleth Map",
-              theme = theme(plot.title = element_text(size = 26, color = "#54278F", face = "bold", family = "Lato"),
-                            plot.subtitle = element_text(size = 22, color = "#756BB1", face = "bold", family = "Lato"))
+              theme = theme(plot.subtitle = element_text(size = 22, color = "#756BB1", face = "bold", family = "Lato"))
             )
 
 pop_chlor
 ```
+
+Caption/Description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
