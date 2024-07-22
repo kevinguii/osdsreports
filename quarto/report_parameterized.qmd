@@ -146,7 +146,7 @@ pop_chlor <- plot_chlor(joined_df = joined_data,
            yr = params$year) + theme_map_chlor() +
             plot_annotation(
               title=paste0(params$country_name,": ",adm_level_match),
-              subtitle = "\nChoropleth Map",
+              subtitle = "Choropleth Map",
               theme = theme(plot.title = element_text(size = 26, color = "#54278F", face = "bold", family = "Lato"),
                             plot.subtitle = element_text(size = 22, color = "#756BB1", face = "bold", family = "Lato"))
             )

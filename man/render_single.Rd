@@ -4,10 +4,12 @@
 \alias{render_single}
 \title{Render a Single Parameterized Report}
 \usage{
-render_single(df, adm_level, adm_name, country_name, year)
+render_single(df, shp, adm_level, adm_name, country_name, year)
 }
 \arguments{
 \item{df}{A data frame provided}
+
+\item{shp}{A shape file}
 
 \item{adm_level}{A numeric specifying ADM level}
 
@@ -18,7 +20,7 @@ render_single(df, adm_level, adm_name, country_name, year)
 \item{year}{A numeric specifying year}
 }
 \value{
-renders a single report stored in the /reports/ directory
+renders a single report
 }
 \description{
 Given a data frame containing population data (df), a specified
@@ -27,7 +29,7 @@ name of the country (country_name), and the year (yr), return a single
 report based on the given parameters
 }
 \examples{
-render_single(country_data,1,"California","USA",2017)
+render_single(country_data,1,adm_1_shape,"California","USA",2017)
 
 
 }

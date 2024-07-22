@@ -4,10 +4,12 @@
 \alias{render_all}
 \title{Batch Render Reports for an ADM Level}
 \usage{
-render_all(df, adm_level, country_name, year)
+render_all(df, shp, adm_level, country_name, year)
 }
 \arguments{
 \item{df}{A data frame containing population data}
+
+\item{shp}{A shape file}
 
 \item{adm_level}{A numeric specifying ADM level}
 
@@ -16,8 +18,7 @@ render_all(df, adm_level, country_name, year)
 \item{year}{A numeric specifying year}
 }
 \value{
-renders all reports report stored in a folder in the /reports/
-directory
+renders all reports for an ADM level
 }
 \description{
 Given a data frame of data (df), a specified administrative
@@ -26,7 +27,7 @@ year (year), generates a batch of reports for every unique entity in the
 given administrative level
 }
 \examples{
-render_all(country_data,1,"USA",2017 )
+render_all(country_data,adm_1,shape,1,"USA",2017)
 
 
 }
