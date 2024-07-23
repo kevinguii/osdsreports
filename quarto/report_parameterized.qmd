@@ -1,17 +1,17 @@
 ---
 params:
-  df: ""
-  shp: ""
-  adm_level: ""
-  adm_name: ""
-  country_name: ""
+  df: "" #Dataframe
+  shp: "" #Shapefile
+  adm_level: "" #ADM Level
+  adm_name: "" #ADM Name
+  country_name: "" 
   year: ""
   
 execute:
-  echo: false #show/hide code output
-  warning: false #suppress warnings
-  message: false #suppress messages
-  output: true #include output of code chunks
+  echo: false
+  warning: false 
+  message: false 
+  output: true 
   
 pdf-engine: xelatex
 format:
@@ -26,7 +26,7 @@ format:
 mainfont: Lato
 
 header-includes:
-  - \input{_extensions/styles.tex}
+  - \input{_extensions/styles.tex} #contains footer
   
 knitr:
   opts_chunk:
@@ -36,6 +36,7 @@ knitr:
 
 ```{r setup, include = FALSE}
 #load all packages
+
 library(IPCpoputils)
 library(popreports)
 library(jsonlite)
@@ -45,21 +46,23 @@ library(ggplot2)
 library(dplyr)
 library(ggpubr)
 library(patchwork)
+library(rmapshaper)
 ```
 
 ```{r}
-#load all necessary data
+#load all data
+
 adm_level_match <- paste0("ADM",params$adm_level)
 df <- fromJSON(params$df,simplifyDataFrame = TRUE)
 shape_file <- geojson_sf(params$shp)
+shape_file <- ms_simplify(shape_file, keep = 0.05, keep_shapes = TRUE) #reduce size
 levels <- unique(df$AGE_CAT)
 df$AGE_CAT <- factor(df$AGE_CAT,levels=levels)
 ```
 
 ```{r}
-# manipulate data to the provided parameters
-#filters data for year and ADM level
-#check to make sure valid adm_level, year, and adm_name provided
+#filters data for year and ADM level if params are valid
+
 if ((params$adm_level %in% unique(df$ADM_LEVEL)) & (params$year %in% unique(df$YR)) & (toupper(params$adm_name) %in% df[[adm_level_match]])){
   df_filtered <- df %>% filter(ADM_LEVEL == params$adm_level & SEX!='B' &
                                  YR == params$year &
@@ -70,7 +73,8 @@ if ((params$adm_level %in% unique(df$ADM_LEVEL)) & (params$year %in% unique(df$Y
 ```
 
 ```{r,fig.height = 1}
-#Title Text/Plot
+#Side-by-side Title Text/Plot
+
 title_text <- ggplot() +
                 theme_void() +
                 labs(title = paste0(params$adm_name,", ",params$country_name, " Demographics in ", params$year),
@@ -89,7 +93,7 @@ grid.arrange(title_text,title_shp_file,nrow=1, widths = c(3,1))
 ```
 
 ```{r}
-# Add a blurb at the top of the report to describe the important key statistics
+# Summary Blurb at the top of the report to describe the important key statistics
 
 blurb_result <- generate_blurb(df_filtered)
 
@@ -106,6 +110,8 @@ if (!is.null(blurb_result)) {
 In `r params$year`, Tanzania's was `r total_pop`. In the demographic composition, males accounted for `r percent_male`% of the population and females `r percent_female`%. The country had a young population of `r total_less5` children under the age of 5. Meanwhile, the working-age adult population, a key driver of the nation's economy, numbered `r total_working`.
 
 ```{r}
+# Population Pyramid using IPCpoputils function
+
 pop_pyr <- plot_pyr(df_filtered, params$adm_name, '5') +
             plot_annotation(
               subtitle = "Population Pyramid",
@@ -119,8 +125,10 @@ Caption/Description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, se
 
 \newpage
 ```{r}
-# Choropleth Map
+# Choropleth Map using IPCpoputils function
+
 joined_data <- join_data_to_shp(df,shape_file,adm_level_match,params$year)
+
 pop_chlor <- plot_chlor(joined_df = joined_data,
            country = params$country_name,
            yr = params$year) +

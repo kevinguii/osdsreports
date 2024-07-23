@@ -26,7 +26,7 @@
 render_all <- function(df, shp, adm_level, country_name, year){
   adm_level_match <- paste0("ADM",adm_level)
 
-  #render all files
+  #render all unique files
   for (adm_name in setdiff(unique(df[[adm_level_match]]),NA)){
 
     validate_parameters(adm_level, adm_name, df, year, parameterized=TRUE)
@@ -35,6 +35,7 @@ render_all <- function(df, shp, adm_level, country_name, year){
   }
 
   #zip all files
+
   prev_dir <- getwd()
   setwd('./quarto')
   pdf_files <- list.files(pattern = "\\.pdf$", full.names = TRUE)

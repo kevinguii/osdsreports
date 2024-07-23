@@ -1,15 +1,15 @@
 ---
 params:
-  df: ""
-  shp: ""
+  df: "" #Dataframe
+  shp: "" #Shapefile
   country_name: ""
   year: ""
   
 execute:
-  echo: false #show/hide code output
-  warning: false #suppress warnings
-  message: false #suppress messages
-  output: true #include output of code chunks
+  echo: false 
+  warning: false 
+  message: false 
+  output: true 
   
 pdf-engine: xelatex
 format:
@@ -24,7 +24,7 @@ format:
 mainfont: Lato
 
 header-includes:
-  - \input{_extensions/styles.tex}
+  - \input{_extensions/styles.tex} #contains footer
   
 knitr:
   opts_chunk:
@@ -34,6 +34,7 @@ knitr:
 
 ```{r setup, include = FALSE}
 #load all packages
+
 library(IPCpoputils)
 library(popreports)
 library(jsonlite)
@@ -43,19 +44,22 @@ library(ggplot2)
 library(dplyr)
 library(ggpubr)
 library(patchwork)
+library(rmapshaper)
 ```
 
 ```{r}
-#load all necessary data
+#load all data
+
 df <- fromJSON(params$df,simplifyDataFrame = TRUE)
 levels <- unique(df$AGE_CAT)
 df$AGE_CAT <- factor(df$AGE_CAT,levels=levels)
 shape_file <- geojson_sf(params$shp)
+shape_file <- ms_simplify(shape_file, keep = 0.05, keep_shapes = TRUE) #reduce size
 ```
 
 ```{r}
-# manipulate data to the provided parameters
-#filters data for year
+#filters data for year if parameters are valid
+
 if (params$year %in% unique(df$YR) & 0 %in% unique(df$ADM_LEVEL)){
   df_filtered <- df %>% filter(YR == params$year & ADM_LEVEL == 0 & SEX!='B')
 } else{
@@ -64,7 +68,9 @@ if (params$year %in% unique(df$YR) & 0 %in% unique(df$ADM_LEVEL)){
 ```
 
 ```{r,fig.height = 1}
-#Title Text/Plot, running incredibly slow
+#Side-by-side Title Text/Plot, running incredibly slow
+
+#text
 title_text <- ggplot() + theme_void() +
                 labs(title = paste0(params$country_name, "'s Demographics in ", params$year),
                      subtitle = "National Report") +
@@ -73,15 +79,17 @@ title_text <- ggplot() + theme_void() +
                   plot.subtitle = element_text(size = 22, color = "#756BB1", family = "Lato")
                   )
 
+#shapefile
 title_shp_file <- ggplot() +
                     geom_sf(data = shape_file,fill="white",color="black") +
                     theme_void()
 
+#combine
 grid.arrange(title_text,title_shp_file,nrow=1, widths = c(3,1))
 ```
 
 ```{r}
-# Add a blurb at the top of the report to describe important, key statistics
+# Summary Blurb at the top of the report to describe the important key statistics
 
 blurb_result <- generate_blurb(df_filtered)
 
@@ -99,7 +107,8 @@ In `r params$year`, Tanzania's was `r total_pop`. In the demographic composition
 
 
 ```{r}
-#national population pyramid, pre-filtering data
+# Population Pyramid using IPCpoputils function
+
 pop_pyr <- plot_pyr(df_filtered, params$country_name, '5') +
             plot_annotation(
               title = "Population Pyramid",

@@ -13,6 +13,8 @@
 #'
 #'
 render_quarto_document <- function(df=NULL, shp=NULL, adm_level=NULL, adm_name=NULL, country_name=NULL, year=NULL, parameterized=TRUE, batch = FALSE) {
+
+  #BATCH REPORTING: runs parameterized report then renames each file
   if (batch){
     quarto::quarto_render(
       input = here::here("quarto", "report_parameterized.qmd"),
@@ -28,7 +30,9 @@ render_quarto_document <- function(df=NULL, shp=NULL, adm_level=NULL, adm_name=N
     new_file_name <- paste0(here::here("quarto"),"/",adm_name,"_ADM",adm_level,".pdf")
     file.rename(here::here("quarto","report_parameterized.pdf"),new_file_name)
 
-  } else if (parameterized){
+  }
+  #SUBNATIONAL REPORT: runs single parameterized report
+  else if (parameterized){
     quarto::quarto_render(
       input = here::here("quarto", "report_parameterized.qmd"),
       execute_params = list(
@@ -40,7 +44,9 @@ render_quarto_document <- function(df=NULL, shp=NULL, adm_level=NULL, adm_name=N
         year = year
       )
     )
-  } else{
+  }
+  #NATIONAL REPORT: runs single national report
+  else{
     quarto::quarto_render(
       input = here::here("quarto","report_national.qmd"),
       execute_params = list(

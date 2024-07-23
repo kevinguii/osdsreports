@@ -30,8 +30,10 @@
 
 render_single <- function(df,shp,adm_level,adm_name,country_name,year){
 
+  #validate the parameters
   validate_parameters(adm_level, adm_name, df, year, parameterized=TRUE)
 
+  #render the document
   render_quarto_document(df, shp, adm_level, adm_name, country_name, year,parameterized=TRUE)
 
 }
