@@ -23,6 +23,7 @@ format:
       - margin = 0.5in
       - bottom = 1.3in
       - top = 0.5in
+mainfont: Lato
 
 header-includes:
   - \input{_extensions/styles.tex}
