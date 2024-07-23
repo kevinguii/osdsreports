@@ -37,22 +37,14 @@ knitr:
 ```{r setup, include = FALSE}
 #load all packages
 library(IPCpoputils)
-library(jsonlite)
-library(dplyr)
-library(knitr)
 library(popreports)
+library(jsonlite)
+library(geojsonsf)
+library(gridExtra)
 library(ggplot2)
-library(png)
+library(dplyr)
 library(ggpubr)
 library(patchwork)
-library(geojsonsf)
-library(jpeg)
-library(grid)
-library(sf)
-library(tidyverse)
-library(showtext); showtext_auto()
-library(gridtext)
-library(gridExtra)
 ```
 
 ```{r}
