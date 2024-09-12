@@ -38,7 +38,7 @@ knitr:
 #load all packages
 
 library(IPCpoputils)
-library(popreports)
+library(osdsreports)
 library(jsonlite)
 library(geojsonsf)
 library(gridExtra)
