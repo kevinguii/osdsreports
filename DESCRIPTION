@@ -1,4 +1,4 @@
-Package: popreports
+Package: osdsreports
 Type: Package
 Title: A suite of tools for parameterized reporting for U.S. Census Bureau datasets from the International Programs Center
 Version: 0.1.0
